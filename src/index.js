@@ -14,7 +14,9 @@ const client = new Client({
 });
 // payload 19957757
 // guild = server
-
+client.on('clientReady', (c) => {
+    console.log("The bot's ready.");
+});
 client.login('MTQxNzU2NDg4OTc5MDI4Mzc3Ng.GByhKI.VMFsiYW44MGYf-aNfKGGdY1HouOtxzBXb5I-Bw');
 
 //perm integer 8
@@ -23,3 +25,5 @@ client.login('MTQxNzU2NDg4OTc5MDI4Mzc3Ng.GByhKI.VMFsiYW44MGYf-aNfKGGdY1HouOtxzBX
 //client secret 03DhbyizADbekEdrMlnvVXjJOHeu1q6o
 //client id 1417564889790283776
 //bot token MTQxNzU2NDg4OTc5MDI4Mzc3Ng.GByhKI.VMFsiYW44MGYf-aNfKGGdY1HouOtxzBXb5I-Bw
+
+
