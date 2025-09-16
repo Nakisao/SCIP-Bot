@@ -15,7 +15,7 @@ const client = new Client({
 // payload 19957757
 // guild = server
 
-client.login('03DhbyizADbekEdrMlnvVXjJOHeu1q6o');
+client.login('MTQxNzU2NDg4OTc5MDI4Mzc3Ng.GByhKI.VMFsiYW44MGYf-aNfKGGdY1HouOtxzBXb5I-Bw');
 
 //perm integer 8
 //app id 1417564889790283776
