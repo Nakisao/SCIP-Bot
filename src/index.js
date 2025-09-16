@@ -15,7 +15,7 @@ const client = new Client({
 // payload 19957757
 // guild = server
 client.on('clientReady', (c) => {
-    console.log("The bot's ready.");
+    console.log(`${c.user.tag} is online`);
 });
 client.login('MTQxNzU2NDg4OTc5MDI4Mzc3Ng.GByhKI.VMFsiYW44MGYf-aNfKGGdY1HouOtxzBXb5I-Bw');
 
