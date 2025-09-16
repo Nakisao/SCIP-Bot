@@ -15,4 +15,11 @@ const client = new Client({
 // payload 19957757
 // guild = server
 
-client.login('MTQwOTIxNjE1OTUyOTU3MQDyNA.G0emTU.g6YOnJoRVtcUxBvAoO68zp9IJO7nSMKj2lryEY');
+client.login('03DhbyizADbekEdrMlnvVXjJOHeu1q6o');
+
+//perm integer 8
+//app id 1417564889790283776
+//pub. key 5bd5579a97ffff274fe7a9bd17eb816eb420da08f195cd8596ad9aaa330b77bb
+//client secret 03DhbyizADbekEdrMlnvVXjJOHeu1q6o
+//client id 1417564889790283776
+//bot token MTQxNzU2NDg4OTc5MDI4Mzc3Ng.GByhKI.VMFsiYW44MGYf-aNfKGGdY1HouOtxzBXb5I-Bw
