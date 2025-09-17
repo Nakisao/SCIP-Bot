@@ -17,6 +17,7 @@ const client = new Client({
 client.on('clientReady', (c) => {
     console.log(`${c.user.tag} is online`);
 });
+
 client.login('MTQxNzU2NDg4OTc5MDI4Mzc3Ng.GByhKI.VMFsiYW44MGYf-aNfKGGdY1HouOtxzBXb5I-Bw');
 
 //perm integer 8
@@ -26,4 +27,6 @@ client.login('MTQxNzU2NDg4OTc5MDI4Mzc3Ng.GByhKI.VMFsiYW44MGYf-aNfKGGdY1HouOtxzBX
 //client id 1417564889790283776
 //bot token MTQxNzU2NDg4OTc5MDI4Mzc3Ng.GByhKI.VMFsiYW44MGYf-aNfKGGdY1HouOtxzBXb5I-Bw
 
+//------------------------------------------------
 
+//surely there's some way to have a custom file right?
