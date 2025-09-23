@@ -42,13 +42,9 @@ for (const folder of commandFolders) {
 	}
 }
 
-// payload 19957757
-// guild = server
-client.on('clientReady', (c) => {
-    console.log(`${c.user.tag} is online`);
-});
+client.login(token);
 
-client.login('MTQxNzU2NDg4OTc5MDI4Mzc3Ng.GByhKI.VMFsiYW44MGYf-aNfKGGdY1HouOtxzBXb5I-Bw');
+
 
 //perm integer 8
 //app id 1417564889790283776
@@ -56,6 +52,8 @@ client.login('MTQxNzU2NDg4OTc5MDI4Mzc3Ng.GByhKI.VMFsiYW44MGYf-aNfKGGdY1HouOtxzBX
 //client secret 03DhbyizADbekEdrMlnvVXjJOHeu1q6o
 //client id 1417564889790283776
 //bot token MTQxNzU2NDg4OTc5MDI4Mzc3Ng.GByhKI.VMFsiYW44MGYf-aNfKGGdY1HouOtxzBXb5I-Bw
+// payload 19957757
+// guild = server
 
 //------------------------------------------------
 
