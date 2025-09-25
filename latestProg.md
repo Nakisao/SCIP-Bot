@@ -1,1 +1,1 @@
-hey, latest progress; you're on event-handling - reading event files. yw.
+run nodemon, then deploy-commands.js

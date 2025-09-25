@@ -29,3 +29,5 @@ module.exports = {
 		}
 	},
 };
+
+console.log("reload.js loaded.");
