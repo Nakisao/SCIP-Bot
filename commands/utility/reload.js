@@ -1,13 +1,16 @@
-const { SlashCommandBuilder } = require('discord.js');
+const { SlashCommandBuilder, PermissionFlagsBits } = require('discord.js');
 
 module.exports = {
 	category: 'utility',
 	data: new SlashCommandBuilder()
 		.setName('reload')
 		.setDescription('Reloads a command.')
+		.setDefaultMemberPermissions(PermissionFlagsBits.Administrator)
+
 		.addStringOption(option =>
 			option.setName('command')
 				.setDescription('The command to reload.')
+				.setAutocomplete(true)
 				.setRequired(true)),
 	async execute(interaction) {
 		const commandName = interaction.options.getString('command', true).toLowerCase();
