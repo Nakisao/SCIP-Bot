@@ -9,7 +9,7 @@ module.exports = {
 
 		.addStringOption(option =>
 			option.setName('command')
-				.setDescription('The command to reload.')
+				.setDescription('The command to reload. Requires administrator.')
 				.setAutocomplete(true)
 				.setRequired(true)),
 	async execute(interaction) {
