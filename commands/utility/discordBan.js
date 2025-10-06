@@ -24,11 +24,8 @@ module.exports = {
                 .setDescription('The number of hours to temporarily ban the user'))
         .setDefaultMemberPermissions(PermissionFlagsBits.BanMembers),
         async execute(interaction){
-            return interaction.reply({
-                content: 'This command is disabled.',
-                ephemeral:true
-            });
-        }
+            await interaction.reply('This command is disabled!');
+        },
     // async execute(interaction) {
     //     // Ensure the command is not run in a DM.
     //     if (!interaction.inGuild()) {
