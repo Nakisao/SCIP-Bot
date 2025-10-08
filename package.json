@@ -1,8 +1,11 @@
 {
+  "$schema": "https://json.schemastore.org/package.json",
   "name": "scip-bot",
   "version": "1.0.0",
+  "private": true,
   "description": "",
   "main": "index.js",
+  "type": "module",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "bot-init": "node deploy-commands.js && node index.js",
@@ -21,6 +24,19 @@
   },
   "homepage": "https://github.com/Nakisao/SCIP-Bot#readme",
   "dependencies": {
+		"@discordjs/core": "^2.2.2",
+		"discord.js": "^14.22.1",
     "mongodb": "^6.19.0"
-  }
+	},
+	"devDependencies": {
+		"eslint": "^9.37.0",
+		"eslint-config-neon": "^0.2.7",
+		"eslint-formatter-compact": "^8.40.0",
+		"eslint-formatter-pretty": "^7.0.0",
+		"prettier": "^3.6.2",
+		"zod": "^3.25.76"
+	},
+	"engines": {
+		"node": ">=22.12.0"
+	}
 }
