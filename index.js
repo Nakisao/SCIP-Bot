@@ -4,22 +4,22 @@ const { Client, IntentsBitField, Collection, Events, GatewayIntentBits, MessageF
 const { token } = require('./config.json');
 
 const client = new Client({
-    intents: [
-        IntentsBitField.Flags.GuildMembers,
-        IntentsBitField.Flags.GuildMessages,
-        IntentsBitField.Flags.GuildModeration,
-        IntentsBitField.Flags.GuildIntegrations,
-        IntentsBitField.Flags.GuildWebhooks,
-        IntentsBitField.Flags.GuildInvites,
-        IntentsBitField.Flags.GuildMessageReactions,
-        IntentsBitField.Flags.MessageContent,
-        GatewayIntentBits.Guilds,
-        GatewayIntentBits.GuildMembers,
-        GatewayIntentBits.GuildModeration,
-        GatewayIntentBits.GuildMessages,
-        GatewayIntentBits.GuildMessageReactions,
-        GatewayIntentBits.GuildMessagePolls
-    ],
+	intents: [
+		IntentsBitField.Flags.GuildMembers,
+		IntentsBitField.Flags.GuildMessages,
+		IntentsBitField.Flags.GuildModeration,
+		IntentsBitField.Flags.GuildIntegrations,
+		IntentsBitField.Flags.GuildWebhooks,
+		IntentsBitField.Flags.GuildInvites,
+		IntentsBitField.Flags.GuildMessageReactions,
+		IntentsBitField.Flags.MessageContent,
+		GatewayIntentBits.Guilds,
+		GatewayIntentBits.GuildMembers,
+		GatewayIntentBits.GuildModeration,
+		GatewayIntentBits.GuildMessages,
+		GatewayIntentBits.GuildMessageReactions,
+		GatewayIntentBits.GuildMessagePolls,
+	],
 });
 
 client.cooldowns = new Collection();
@@ -41,7 +41,7 @@ for (const folder of commandFolders) {
 	}
 }
 
-const eventsPath = path.join(__dirname, 'src','events');
+const eventsPath = path.join(__dirname, 'src', 'events');
 const eventFiles = fs.readdirSync(eventsPath).filter(file => file.endsWith('.js'));
 
 for (const file of eventFiles) {
@@ -56,19 +56,17 @@ for (const file of eventFiles) {
 
 client.login(token);
 
-
-
-//perm integer 8
-//app id 1417564889790283776
-//pub. key 5bd5579a97ffff274fe7a9bd17eb816eb420da08f195cd8596ad9aaa330b77bb
-//client secret 03DhbyizADbekEdrMlnvVXjJOHeu1q6o
-//client id 1417564889790283776
-//bot token MTQxNzU2NDg4OTc5MDI4Mzc3Ng.GByhKI.VMFsiYW44MGYf-aNfKGGdY1HouOtxzBXb5I-Bw
+// perm integer 8
+// app id 1417564889790283776
+// pub. key 5bd5579a97ffff274fe7a9bd17eb816eb420da08f195cd8596ad9aaa330b77bb
+// client secret 03DhbyizADbekEdrMlnvVXjJOHeu1q6o
+// client id 1417564889790283776
+// bot token MTQxNzU2NDg4OTc5MDI4Mzc3Ng.GByhKI.VMFsiYW44MGYf-aNfKGGdY1HouOtxzBXb5I-Bw
 // payload 19957757
 // guild = server
 
-//------------------------------------------------
+// ------------------------------------------------
 
-//surely there's some way to have a custom file right?
+// surely there's some way to have a custom file right?
 // oh, you set up event listeners & senders.
 

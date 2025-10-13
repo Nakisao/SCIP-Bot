@@ -22,7 +22,7 @@
   "homepage": "https://github.com/Nakisao/SCIP-Bot#readme",
   "dependencies": {
     "discord.js": "^14.23.2",
-    "mongodb": "^6.19.0"
+    "mongodb": "^6.20.0"
   },
   "devDependencies": {
     "@eslint/js": "^9.37.0",
