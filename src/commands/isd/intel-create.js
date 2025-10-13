@@ -4,3 +4,4 @@
 // SC4 > O5 > OoTA > TA
 // ISD
 // prints the case ID in the ISD server, with who created the file, who it's on, and why.
+// utilizes MongoDB to store the intel
