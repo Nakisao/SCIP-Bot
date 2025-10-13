@@ -9,4 +9,4 @@ module.exports = {
 	},
 };
 
-console.log("ping.js loaded.");
+console.log('ping.js loaded.');
