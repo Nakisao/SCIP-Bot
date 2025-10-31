@@ -9,4 +9,4 @@ module.exports = {
 	},
 };
 
-console.log("server.js loaded.");
+console.log('server.js loaded.');

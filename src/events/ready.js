@@ -8,4 +8,4 @@ module.exports = {
 	},
 };
 
-console.log("ready.js loaded.");
+console.log('ready.js loaded.');
