@@ -25,10 +25,6 @@ module.exports = {
 				.setDescription('Number of days of messages to delete (0-7)')
 				.setMinValue(0)
 				.setMaxValue(7))
-		.addNumberOption(option =>
-			option
-				.setName('duration_hours')
-				.setDescription('The number of hours to temporarily ban the user (Not implemented)'))
 		.setDefaultMemberPermissions(PermissionFlagsBits.BanMembers),
 
 	async execute(interaction) {
@@ -55,7 +51,8 @@ module.exports = {
 		// Check if the target is the bot itself.
 		if (targetUser.id === interaction.client.user.id) {
 			return interaction.reply({
-				content: 'I cannot ban myself.',
+				// eslint-disable-next-line quotes
+				content: "I cannot ban myself. What's wrong with you?",
 				ephemeral: true,
 			});
 		}
