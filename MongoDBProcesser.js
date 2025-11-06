@@ -1,6 +1,17 @@
 const { MongoClient, ServerApiVersion } = require('mongodb');
-const uri = 'mongodb+srv://Nakisao:Q4aMRo8PIjZE6D1d@cluster0.lkrkiax.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0';
-//                                  ^ DB Password! Get from The Realm of Alts
+// Load .env into process.env (optional)
+try {
+	require('dotenv').config();
+}
+catch {
+	// dotenv not installed; environment variables will be used instead
+}
+// Read MongoDB URI from environment (recommended) or set in a secure config store.
+const uri = process.env.MONGODB_URI || '';
+
+if (!uri) {
+	console.error('No MONGODB_URI environment variable set. MongoDB operations will not run.');
+}
 // Create a MongoClient with a MongoClientOptions object to set the Stable API version
 const client = new MongoClient(uri, {
 	serverApi: {
@@ -12,7 +23,8 @@ const client = new MongoClient(uri, {
 
 async function run() {
 	try {
-		// Connect the client to the server	(optional starting in v4.7)
+		if (!uri) return console.warn('Skipping MongoDB connection: no URI provided.');
+		// Connect the client to the server (optional starting in v4.7)
 		await client.connect();
 		// Send a ping to confirm a successful connection
 		await client.db('admin').command({ ping: 1 });
@@ -20,7 +32,7 @@ async function run() {
 	}
 	finally {
 		// Ensures that the client will close when you finish/error
-		await client.close();
+		if (client && client.close) await client.close();
 	}
 }
 run().catch(console.dir);

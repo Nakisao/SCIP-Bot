@@ -1,6 +1,6 @@
 /* eslint-disable no-inline-comments */
 const { SlashCommandBuilder, PermissionFlagsBits } = require('discord.js');
-
+console.warn('Loading discordBan.js...');
 module.exports = {
 	data: new SlashCommandBuilder()
 		.setName('discord-ban')

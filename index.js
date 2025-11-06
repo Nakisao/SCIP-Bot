@@ -1,8 +1,16 @@
 const fs = require('node:fs');
 const path = require('node:path');
+// Load .env into process.env (optional; requires dotenv in dependencies)
+try {
+	require('dotenv').config();
+}
+catch {
+	// dotenv not installed; environment variables will be used instead
+}
 // eslint-disable-next-line no-unused-vars
 const { Client, IntentsBitField, Collection, Events, GatewayIntentBits, MessageFlags } = require('discord.js');
-const { token } = require('./config.json');
+const config = require('./config.json');
+const token = process.env.DISCORD_TOKEN || process.env.TOKEN || config.token;
 
 const client = new Client({
 	intents: [
@@ -57,19 +65,13 @@ for (const file of eventFiles) {
 	}
 }
 
+if (!token) {
+	console.error('No Discord token found. Set DISCORD_TOKEN in the environment or add it to config.json (not recommended).');
+	process.exit(1);
+}
+
 client.login(token);
 
+// developer notes (no secrets here)
 // perm integer 8
-// app id 1417564889790283776
-// pub. key 5bd5579a97ffff274fe7a9bd17eb816eb420da08f195cd8596ad9aaa330b77bb
-// client secret 03DhbyizADbekEdrMlnvVXjJOHeu1q6o
-// client id 1417564889790283776
-// bot token MTQxNzU2NDg4OTc5MDI4Mzc3Ng.GByhKI.VMFsiYW44MGYf-aNfKGGdY1HouOtxzBXb5I-Bw
 // payload 19957757
-// guild = server
-
-// ------------------------------------------------
-
-// surely there's some way to have a custom file right?
-// oh, you set up event listeners & senders.
-

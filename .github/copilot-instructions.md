@@ -1,3 +1,39 @@
+# Copilot Instructions for SCIP-Bot
+
+Concise, actionable guidance to make correct edits quickly in this repo.
+
+- Project: Node.js Discord bot. Entry points: `src/index.js` (runtime) and `deploy-commands.js` (registers slash commands).
+- Node: `>= 22.12.0` (see `package.json`). Use the project's npm scripts: `npm run start-bot`, `npm run deploy-cmds`, or `npm run bot-init`.
+- Discord.js: This repo targets modern discord.js (v14+). When editing interaction logic (builders, intents, replies, REST), consult the official discord.js guide/API — the code assumes v14 semantics (IntentsBitField, SlashCommandBuilder, interaction reply patterns).
+
+Structure & conventions
+- Commands: `src/commands/<category>/*.js`. Command modules must export `data` (command meta with `data.name`) and `execute(interaction)`. ESM default-exports are preferred for the `src` loader; CJS (`module.exports`) is tolerated by `deploy-commands.js`/`src/index.js`.
+- Events: `src/events/**`. Event modules are ESM default exports with `name`, optional `once`, and `execute`.
+- Loader: `src/util/loaders.js` is the canonical loader — it uses `zod` predicates (`src/commands/index.js`, `src/events/index.js`) and dynamically imports non-`index.js` files. Note: `index.js` files are intentionally skipped.
+
+Important project patterns
+- Mixed module systems: Do NOT change module style without updating callers. If you must convert CJS↔ESM, prefer an adapter and smoke-test with `npm run start-bot`.
+- Deploying commands: `deploy-commands.js` collects commands under `src/commands/<category>` (skips non-directories) and calls `command.data.toJSON()` to push to the guild.
+- Interaction runtime: `src/events/interactionCreate.js` calls `loadCommands()` and will throw if a command name is missing; keep command `data.name` stable.
+
+Integration & secrets
+- MongoDB: The project uses `mongodb` (see `MongoDBProcesser.js` and `src/commands/discord/isd/*`). Do NOT commit real credentials. Prefer a `.env` or secret manager and rotate any leaked credentials in `config.json`/`MongoDBProcesser.js` immediately.
+- Config: `config.json` currently holds `clientId`, `guildId`, and `token`. Treat this as sensitive — move to env vars for production.
+
+Quick file examples to inspect
+- `src/util/loaders.js` — file discovery + zod validation.
+- `src/events/interactionCreate.js` — command dispatch pattern.
+- `deploy-commands.js` — how slash commands are serialized and pushed.
+- `src/index.js` — runtime client setup and CJS command loading.
+- `src/commands/utility/user.js` — small example command using `SlashCommandBuilder`.
+
+When in doubt
+- Open: `package.json`, `config.json`, `deploy-commands.js`, `src/index.js`, `src/util/loaders.js`, `src/events/interactionCreate.js`.
+- For Discord API details consult: https://discordjs.guide and the official docs.
+
+If you'd like, I can:
+- Add a short example template for a new command (ESM + SlashCommandBuilder).
+- Propose a `.env` migration to remove tokens and DB URIs from source.
 # Copilot Instructions for SCIP-Bot (updated Oct 9, 2025)
 
 Short, actionable guidance to help AI coding agents make correct edits quickly.
