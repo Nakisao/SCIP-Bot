@@ -1,5 +1,5 @@
 /* eslint-disable no-inline-comments */
-const { SlashCommandBuilder, PermissionFlagsBits } = require('discord.js');
+const { SlashCommandBuilder, PermissionFlagsBits, MessageFlags } = require('discord.js');
 console.warn('Loading discordBan.js...');
 module.exports = {
 	data: new SlashCommandBuilder()
@@ -18,7 +18,7 @@ module.exports = {
 		.addBooleanOption(option =>
 			option
 				.setName('global')
-				.setDescription('Whether to ban the user from all guilds the bot is in (Requires Administrator)'))
+				.setDescription('Whether to ban the user from all guilds the bot is in (Requires Administrator)')) // it really just requires a rank
 		.addIntegerOption(option => // Corrected to use addIntegerOption
 			option
 				.setName('delete_messages_days')
@@ -32,7 +32,7 @@ module.exports = {
 		if (!interaction.inGuild()) {
 			return interaction.reply({
 				content: 'This command can only be used in a server.',
-				ephemeral: true,
+				flags: MessageFlags.Ephemeral, // FIXED: Replaced ephemeral: true
 			});
 		}
 
@@ -53,7 +53,7 @@ module.exports = {
 			return interaction.reply({
 				// eslint-disable-next-line quotes
 				content: "I cannot ban myself. What's wrong with you?",
-				ephemeral: true,
+				flags: MessageFlags.Ephemeral, // FIXED: Replaced ephemeral: true
 			});
 		}
 
@@ -61,40 +61,61 @@ module.exports = {
 		if (durationHours) {
 			return interaction.reply({
 				content: 'Temporary bans are not yet implemented in this command.',
-				ephemeral: true,
+				flags: MessageFlags.Ephemeral, // FIXED: Replaced ephemeral: true
 			});
 		}
 
 		if (isGlobal) {
 			// Global ban logic
-			const bannedGuilds = [];
+			const bannedGuildsCount = { success: 0, failed: 0 };
+			const failedGuildDetails = []; // To store error messages for console logging
+			const totalGuilds = interaction.client.guilds.cache.size;
+
 
 			for (const guild of interaction.client.guilds.cache.values()) {
-				// Check for BANNABLE permission in the specific guild for the bot
-				if (guild.members.me.permissions.has(PermissionFlagsBits.BanMembers)) {
-					try {
-						await guild.members.ban(targetUser.id, banOptions);
-						bannedGuilds.push(guild.name);
-					}
-					// eslint-disable-next-line no-unused-vars
-					catch (error) {
-						continue;
-					}
+				// Ensure the bot has the BanMembers permission in this specific guild
+				const botMember = guild.members.me;
+
+				if (!botMember || !botMember.permissions.has(PermissionFlagsBits.BanMembers)) {
+					// Skip if bot doesn't have permission (this is expected for some guilds)
+					continue;
+				}
+
+				try {
+					await guild.members.ban(targetUser.id, banOptions);
+					bannedGuildsCount.success++;
+				}
+				catch (error) {
+					// Log the specific error instead of failing silently
+					console.error(`[GLOBAL BAN FAIL] Failed to ban ${targetUser.tag} in ${guild.name} (${guild.id}):`, error.message);
+					bannedGuildsCount.failed++;
+					failedGuildDetails.push(guild.name);
 				}
 			}
 
-			if (bannedGuilds.length > 0) {
-				await interaction.reply({
-					content: `✅ Successfully globally banned **${targetUser.tag}** for reason: \`\`\`${reason}\`\`\`\nBanned in: **${bannedGuilds.join(', ')}**`,
-					ephemeral: false,
-				});
+			let replyContent;
+			let replyFlags = 0; // Default to public
+
+			if (bannedGuildsCount.success > 0) {
+				replyContent = `✅ Global ban complete for **${targetUser.tag}** (Reason: \`${reason}\`).\n\n`
+                    + `**Banned in ${bannedGuildsCount.success} out of ${totalGuilds} connected guilds.**`;
+
+				if (bannedGuildsCount.failed > 0) {
+					replyContent += `\n*Note: Failed to ban in ${bannedGuildsCount.failed} guild(s). Reasons logged in the console (e.g., bot missing permissions).*`;
+					replyFlags = MessageFlags.Ephemeral; // Make the response ephemeral if there were failures
+				}
 			}
 			else {
-				await interaction.reply({
-					content: `❌ Failed to ban **${targetUser.tag}** from any guilds. I might not have the \`Ban Members\` permission.`,
-					ephemeral: true,
-				});
+				replyContent = `❌ Global ban failed for **${targetUser.tag}**. I was unable to ban the user from any of the ${totalGuilds} guilds. `
+                    + 'Ensure I have the `Ban Members` permission in the guilds and check the console for specific errors.';
+				replyFlags = MessageFlags.Ephemeral;
 			}
+
+			await interaction.reply({
+				content: replyContent,
+				flags: replyFlags,
+			});
+
 		}
 		else {
 			// Single guild ban logic
@@ -103,7 +124,7 @@ module.exports = {
 			if (memberToBan && !memberToBan.bannable) {
 				return interaction.reply({
 					content: '❌ I cannot ban this user. They may have a higher role than me or be the server owner.',
-					ephemeral: true,
+					flags: MessageFlags.Ephemeral, // FIXED: Replaced ephemeral: true
 				});
 			}
 
@@ -111,14 +132,14 @@ module.exports = {
 				await interaction.guild.members.ban(targetUser.id, banOptions);
 				await interaction.reply({
 					content: `✅ Successfully banned **${targetUser.tag}** from **${interaction.guild.name}** for reason: \`\`\`${reason}\`\`\``,
-					ephemeral: false,
+					// ephemeral: false is the default, so we remove it.
 				});
 			}
 			catch (error) {
 				console.error(error);
 				await interaction.reply({
 					content: `❌ Failed to ban **${targetUser.tag}**. An unexpected error occurred. Do I have the \`Ban Members\` permission?`,
-					ephemeral: true,
+					flags: MessageFlags.Ephemeral, // FIXED: Replaced ephemeral: true
 				});
 			}
 		}

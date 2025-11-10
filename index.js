@@ -33,23 +33,54 @@ const client = new Client({
 
 client.cooldowns = new Collection();
 client.commands = new Collection();
-const foldersPath = path.join(__dirname, 'src', 'commands');
-const commandFolders = fs.readdirSync(foldersPath);
 
-for (const folder of commandFolders) {
-	const commandsPath = path.join(foldersPath, folder);
-	const commandFiles = fs.readdirSync(commandsPath).filter(file => file.endsWith('.js'));
-	for (const file of commandFiles) {
-		const filePath = path.join(commandsPath, file);
-		const command = require(filePath);
-		if ('data' in command && 'execute' in command) {
-			client.commands.set(command.data.name, command);
-		}
-		else {
-			console.log(`[WARNING] The command at ${filePath} is missing a required "data" or "execute" property.`);
+/**
+ * Recursively scans a directory for all JavaScript files.
+ * @param {string} dir The directory path to start scanning from.
+ * @returns {string[]} An array of absolute file paths for all found .js files.
+ */
+function getCommandFiles(dir) {
+	let files = [];
+	try {
+		// Read the contents of the directory, returning fs.Dirent objects for type checking
+		const items = fs.readdirSync(dir, { withFileTypes: true });
+
+		for (const item of items) {
+			const itemPath = path.join(dir, item.name);
+
+			if (item.isDirectory()) {
+				// If it's a directory, recursively call this function and merge results
+				files = files.concat(getCommandFiles(itemPath));
+			}
+			else if (item.isFile() && item.name.endsWith('.js')) {
+				// If it's a file ending in .js, add its path
+				files.push(itemPath);
+			}
 		}
 	}
+	catch (error) {
+		// Handle case where directory might not exist or access is denied
+		console.error(`Error reading directory ${dir}:`, error.message);
+	}
+	return files;
 }
+
+const commandsPath = path.join(__dirname, 'src', 'commands');
+// Use the new recursive function to load all commands regardless of nesting
+const commandFiles = getCommandFiles(commandsPath);
+
+for (const filePath of commandFiles) {
+	// Only load files found by the recursive function
+	const command = require(filePath);
+	if ('data' in command && 'execute' in command) {
+		client.commands.set(command.data.name, command);
+	}
+	else {
+		console.log(`[WARNING] The command at ${filePath} is missing a required "data" or "execute" property.`);
+	}
+}
+// Log how many commands were loaded for verification
+console.log(`Successfully loaded ${client.commands.size} commands from nested folders.`);
 
 const eventsPath = path.join(__dirname, 'src', 'events');
 const eventFiles = fs.readdirSync(eventsPath).filter(file => file.endsWith('.js'));
