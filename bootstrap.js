@@ -20,17 +20,24 @@ function missingEnv(names) {
 async function main() {
 	// Determine required vars per mode
 	const always = ['DISCORD_TOKEN'];
-	const deployOnly = ['CLIENT_ID', 'GUILD_ID'];
 
+	// Mode-specific requirements:
+	// - deploy:local -> needs CLIENT_ID + GUILD_ID
+	// - deploy:global or deploy -> needs CLIENT_ID
+	// - start -> needs only DISCORD_TOKEN
 	let required = [];
-	if (mode === 'deploy') {
-		required = [...always, ...deployOnly];
+	if (mode === 'deploy:local' || mode === 'deploy-local') {
+		required = [...always, 'CLIENT_ID', 'GUILD_ID'];
+	}
+	else if (mode === 'deploy:global' || mode === 'deploy-global' || mode === 'deploy') {
+		required = [...always, 'CLIENT_ID'];
 	}
 	else if (mode === 'start') {
 		required = [...always];
 	}
 	else {
-		required = [...always, ...deployOnly];
+		// default: deploy globally then start -> need CLIENT_ID and DISCORD_TOKEN
+		required = [...always, 'CLIENT_ID'];
 	}
 
 	const missing = missingEnv(required);
@@ -42,8 +49,14 @@ async function main() {
 
 	// Run actions
 	try {
-		if (mode === 'deploy') {
-			require('./deploy-commands.js');
+		if (mode === 'deploy:local' || mode === 'deploy-local') {
+			require('./deploy-commands-locally.js');
+			return;
+		}
+
+		if (mode === 'deploy:global' || mode === 'deploy-global' || mode === 'deploy') {
+			// default deploy action is global
+			require('./deploy-commands-globally.js');
 			return;
 		}
 
@@ -52,8 +65,8 @@ async function main() {
 			return;
 		}
 
-		// default: deploy then start
-		require('./deploy-commands.js');
+		// default: deploy globally then start
+		require('./deploy-commands-globally.js');
 		// Then start the bot
 		require('./index.js');
 	}
