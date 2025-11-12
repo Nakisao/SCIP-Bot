@@ -73,7 +73,23 @@ for (const filePath of commandFiles) {
 	// Only load files found by the recursive function
 	const command = require(filePath);
 	if ('data' in command && 'execute' in command) {
+		// Register canonical name
 		client.commands.set(command.data.name, command);
+		// If a DEV_SUFFIX is configured, also register an alias so '/name-dev' resolves
+		// to the same handler in development environments.
+		try {
+			// Default dev suffix used by local deploy is '-dev' unless overridden.
+			const devSuffix = process.env.DEV_SUFFIX ?? '-dev';
+			if (devSuffix && typeof command.data.name === 'string') {
+				const suffixed = `${command.data.name}${devSuffix}`;
+				if (suffixed.length <= 32) {
+					client.commands.set(suffixed, command);
+				}
+			}
+		}
+		catch {
+			// ignore aliasing errors
+		}
 	}
 	else {
 		console.log(`[WARNING] The command at ${filePath} is missing a required "data" or "execute" property.`);

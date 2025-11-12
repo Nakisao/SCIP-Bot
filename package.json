@@ -6,9 +6,9 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "bot-init": "node bootstrap.js",
-    "dev-deploy": "node bootstrap.js deploy",
+  "dev-deploy": "node bootstrap.js deploy:local",
     "start-bot": "node bootstrap.js start",
-    "global-deploy": "node bootstrap.js global"
+  "global-deploy": "node bootstrap.js deploy:global"
   },
   "repository": {
     "type": "git",

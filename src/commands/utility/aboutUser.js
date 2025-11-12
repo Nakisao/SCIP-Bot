@@ -1,6 +1,10 @@
+/* eslint-disable no-unused-vars */
+/* eslint-disable no-inline-comments */
 const { SlashCommandBuilder, MessageFlags } = require('discord.js');
 const moment = require('moment');
 
+// Define the main guild ID
+const MAIN_GUILD_ID = '1345631743935381534';
 
 // Define the role priority list
 const ROLE_PRIORITY = [
@@ -39,21 +43,37 @@ module.exports = {
 				.setDescription('The user to run this command on.')
 				.setRequired(true)),
 	async execute(interaction) {
+		// 1. Filter: Check if the interaction is from the main guild
+		if (interaction.guildId !== MAIN_GUILD_ID) {
+			return interaction.reply({
+				content: 'This command can only be run in the main server.',
+				ephemeral: true, // Use ephemeral instead of MessageFlags.Ephemeral
+			});
+		}
+
 		// Get the target user object
 		const targetUser = interaction.options.getUser('target');
 
-		// Fetch the target member object (needed for joinDate and roles)
-		// Ensure the interaction is in a guild/server before attempting this
-		if (!interaction.inGuild()) {
-			return interaction.reply({ content: 'This command can only be used in a server!', flags: MessageFlags.Ephemeral });
-		}
+		// Fetch the main guild object
+		const mainGuild = await interaction.client.guilds.fetch(MAIN_GUILD_ID);
 
-		// Fetch the member object, ensuring we have the most up-to-date roles/data
-		const targetMember = await interaction.guild.members.fetch(targetUser.id);
+		// Fetch the target member object from the main guild (needed for joinDate and roles)
+		let targetMember;
+		try {
+			targetMember = await mainGuild.members.fetch(targetUser.id);
+		}
+		catch (error) {
+			// Handle case where the target user is NOT a member of the main guild
+			return interaction.reply({
+				content: `The user **${targetUser.tag}** is not a member of the main server.`,
+				ephemeral: true,
+			});
+		}
 
 		// 1. Get user joined date
 		const joinedDate = targetMember.joinedAt;
-		const formattedJoinedDate = moment(joinedDate).format('MMM Do YYYY, h:mm A [UTC]');
+		// Check if joinedDate exists (it should, but good practice)
+		const formattedJoinedDate = joinedDate ? moment(joinedDate).format('MMM Do YYYY, h:mm A [UTC]') : 'N/A';
 
 		// 2. Get account creation date
 		const creationDate = targetUser.createdAt;
@@ -73,9 +93,11 @@ module.exports = {
 
 		// Construct the reply message
 		const replyMessage =
-            `User **${targetUser.tag}** joined the server on **${formattedJoinedDate}**.\n` +
-            `Their Discord account was created on **${formattedCreationDate}**.\n` +
-            `Their highest tracked role is **${highestRoleName}**.`;
+            `## 👤 User Information for ${targetUser.tag}\n` +
+			'---' +
+            `\n**Main Server Joined:** **${formattedJoinedDate}**\n` +
+            `**Account Created:** **${formattedCreationDate}**\n` +
+            `**Highest Tracked Role:** **${highestRoleName}**`;
 
 		await interaction.reply({ content: replyMessage });
 	},
