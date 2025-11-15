@@ -39,6 +39,19 @@ module.exports = {
 		const targetUser = interaction.options.getUser('target', true);
 		const reason = interaction.options.getString('reason', true);
 		const isGlobal = interaction.options.getBoolean('global') ?? false;
+
+		// If this command may perform long-running actions (e.g. global bans across many guilds),
+		// defer the reply so Discord doesn't expire the interaction token. We'll edit the
+		// deferred reply later with the result.
+		if (isGlobal) {
+			try {
+				await interaction.deferReply({ ephemeral: true });
+			}
+			catch (err) {
+				// If deferring fails, log and continue — later reply attempts will be guarded.
+				console.error('Failed to defer reply for global ban:', err?.message ?? err);
+			}
+		}
 		const durationHours = interaction.options.getNumber('duration_hours');
 		const deleteDays = interaction.options.getInteger('delete_messages_days') ?? 0;
 		const deleteMessageSeconds = deleteDays * 24 * 60 * 60;
@@ -111,10 +124,17 @@ module.exports = {
 				replyFlags = MessageFlags.Ephemeral;
 			}
 
-			await interaction.reply({
-				content: replyContent,
-				flags: replyFlags,
-			});
+			// If we deferred earlier (slow/global path), update the deferred reply. Otherwise use reply.
+			if (interaction.deferred) {
+				// editReply updates the existing deferred response; flags were set during deferReply.
+				await interaction.editReply({ content: replyContent });
+			}
+			else {
+				await interaction.reply({
+					content: replyContent,
+					flags: replyFlags,
+				});
+			}
 
 		}
 		else {

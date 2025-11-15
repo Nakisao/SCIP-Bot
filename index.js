@@ -1,5 +1,6 @@
 const fs = require('node:fs');
 const path = require('node:path');
+const http = require('node:http');
 // Load .env into process.env (optional; requires dotenv in dependencies)
 try {
 	require('dotenv').config();
@@ -116,6 +117,23 @@ if (!token) {
 	console.error('No Discord token found. Set DISCORD_TOKEN in the environment or add it to config.json (not recommended).');
 	process.exit(1);
 }
+
+// Start HTTP server for health checks (useful for deployment platforms like Render, Railway, Heroku)
+const server = http.createServer((req, res) => {
+	res.writeHead(200, { 'Content-Type': 'text/plain' });
+	res.end('Bot is running!\n');
+});
+
+const PORT = process.env.PORT || 8080;
+const HOST = process.env.HOST || '0.0.0.0';
+server.listen(PORT, HOST, () => {
+	console.log(`HTTP server is running on ${HOST}:${PORT}`);
+});
+
+// Handle bot ready event
+client.once(Events.ClientReady, (readyClient) => {
+	console.log(`Logged in as ${readyClient.user.tag}!`);
+});
 
 client.login(token);
 

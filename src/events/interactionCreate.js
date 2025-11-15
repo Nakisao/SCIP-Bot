@@ -41,11 +41,19 @@ module.exports = {
 		}
 		catch (error) {
 			console.error(error);
-			if (interaction.replied || interaction.deferred) {
-				await interaction.followUp({ content: 'There was an error while executing this command!', flags: MessageFlags.Ephemeral });
+			// The interaction may have expired or otherwise become invalid by the time we
+			// try to notify the user. Wrap reply/followUp attempts to avoid throwing an
+			// unhandled exception (e.g., DiscordAPIError[10062]: Unknown interaction).
+			try {
+				if (interaction.replied || interaction.deferred) {
+					await interaction.followUp({ content: 'There was an error while executing this command!', flags: MessageFlags.Ephemeral });
+				}
+				else {
+					await interaction.reply({ content: 'There was an error while executing this command!', flags: MessageFlags.Ephemeral });
+				}
 			}
-			else {
-				await interaction.reply({ content: 'There was an error while executing this command!', flags: MessageFlags.Ephemeral });
+			catch (replyError) {
+				console.error('Failed to send error response to interaction:', replyError?.message ?? replyError);
 			}
 		}
 	},
