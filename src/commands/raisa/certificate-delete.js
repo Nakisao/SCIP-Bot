@@ -46,4 +46,5 @@
 //     },
 // };
 
-console.log('Loaded certificate-delete.js');
+// eslint-disable-next-line quotes
+console.log("Loaded certificate-delete.js -- this doesn't have any actual commands");

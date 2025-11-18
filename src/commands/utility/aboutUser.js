@@ -93,11 +93,11 @@ module.exports = {
 
 		// Construct the reply message
 		const replyMessage =
-            `## 👤 User Information for ${targetUser.tag}\n` +
+            `User Information for **${targetUser.tag}**\n` +
 			'---' +
-            `\n**Main Server Joined:** **${formattedJoinedDate}**\n` +
-            `**Account Created:** **${formattedCreationDate}**\n` +
-            `**Highest Tracked Role:** **${highestRoleName}**`;
+            `\nMain Server Joined: **${formattedJoinedDate}**\n` +
+            `Account Created: **${formattedCreationDate}**\n` +
+            `Highest Tracked Role: **${highestRoleName}**`;
 
 		await interaction.reply({ content: replyMessage });
 	},

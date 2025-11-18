@@ -4,7 +4,7 @@ module.exports = {
 	category: 'utility',
 	data: new SlashCommandBuilder()
 		.setName('reload')
-		.setDescription('Reloads a command.')
+		.setDescription('[thisdoesntfuckingwork] Reloads a command.')
 		.setDefaultMemberPermissions(PermissionFlagsBits.Administrator)
 
 		.addStringOption(option =>
