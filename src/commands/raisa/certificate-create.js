@@ -13,6 +13,12 @@ module.exports = {
 		.addStringOption(option =>
 			option
 				.setName('appoint_rank')
+				// make it so that appoint_rank is restricted autofilling to the following ranks based on user authentication (oAuth) from verification system:
+				// based on roblox groups
+				// main group (id:):
+				// "SC-3", "SC-4", "SC-5", "OoTA"
+				// ScD ranks (id: ):
+				// ranks here
 				.setDescription('Role or rank that can appoint this certificate')
 				.setRequired(false))
 		.setDefaultMemberPermissions(PermissionFlagsBits.Administrator),
