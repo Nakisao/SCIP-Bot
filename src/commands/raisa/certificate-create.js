@@ -17,7 +17,7 @@ module.exports = {
 				// based on roblox groups
 				// main group (id:):
 				// "SC-3", "SC-4", "SC-5", "OoTA"
-				// ScD ranks (id: ):
+				// ScD ranks (group id: ):
 				// ranks here
 				.setDescription('Role or rank that can appoint this certificate')
 				.setRequired(false))
