@@ -4,7 +4,7 @@ const { MongoClient, ObjectId } = require('mongodb');
 let _client = null;
 
 function getMongoUri() {
-	return process.env.MONGODB_URI || 'mongodb://localhost:27017';
+	return process.env.MONGODB_LOCAL;
 }
 
 async function getClient() {
