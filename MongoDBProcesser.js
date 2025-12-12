@@ -7,7 +7,7 @@ catch {
 	// dotenv not installed; environment variables will be used instead
 }
 // Read MongoDB URI from environment (recommended) or set in a secure config store.
-const uri = process.env.MONGODB_URI || '';
+const uri = process.env.MONGODB_LOCAL || process.env.MONGODB_URI;
 
 if (!uri) {
 	console.error('No MONGODB_URI environment variable set. MongoDB operations will not run.');
