@@ -1,10 +1,15 @@
 const { MongoClient, ObjectId } = require('mongodb');
 
+// Load dotenv if available
+try {
+	require('dotenv').config();
+} catch {}
+
 // Reuse a single MongoClient for the lifetime of the process.
 let _client = null;
 
 function getMongoUri() {
-	return process.env.MONGODB_LOCAL;
+	return process.env.MONGODB_URI || process.env.MONGODB_LOCAL || 'mongodb://localhost:27017';
 }
 
 async function getClient() {
