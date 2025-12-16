@@ -32,7 +32,7 @@ module.exports = {
 		const appointRank = interaction.options.getString('appoint_rank', false);
 
 		try {
-			await interaction.deferReply({ ephemeral: true });
+			await interaction.deferReply({ flags: MessageFlags.Ephemeral });
 			const cert = await createCertificate({ description, appointRank });
 			return interaction.editReply({ content: `Certificate created with ID ${cert.certificateId}.`, flags: MessageFlags.Ephemeral });
 		}

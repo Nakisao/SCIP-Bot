@@ -45,7 +45,7 @@ module.exports = {
 		// deferred reply later with the result.
 		if (isGlobal) {
 			try {
-				await interaction.deferReply({ ephemeral: true });
+				await interaction.deferReply({ flags: MessageFlags.Ephemeral });
 			}
 			catch (err) {
 				// If deferring fails, log and continue — later reply attempts will be guarded.

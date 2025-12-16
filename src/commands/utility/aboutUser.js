@@ -47,7 +47,7 @@ module.exports = {
 		if (interaction.guildId !== MAIN_GUILD_ID) {
 			return interaction.reply({
 				content: 'This command can only be run in the main server.',
-				ephemeral: true, // Use ephemeral instead of MessageFlags.Ephemeral
+				flags: MessageFlags.Ephemeral,
 			});
 		}
 
@@ -66,7 +66,7 @@ module.exports = {
 			// Handle case where the target user is NOT a member of the main guild
 			return interaction.reply({
 				content: `The user **${targetUser.tag}** is not a member of the main server.`,
-				ephemeral: true,
+				flags: MessageFlags.Ephemeral,
 			});
 		}
 

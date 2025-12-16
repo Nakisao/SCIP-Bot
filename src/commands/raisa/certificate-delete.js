@@ -1,6 +1,6 @@
 // deletes a RAISA certificate by its ID.
 // requires administrator
-const { SlashCommandBuilder, PermissionFlagsBits } = require('discord.js');
+const { SlashCommandBuilder, PermissionFlagsBits, MessageFlags } = require('discord.js');
 const { deleteCertificateById } = require('../../../raisa/certificates');
 
 module.exports = {
@@ -18,7 +18,7 @@ module.exports = {
 		if (!interaction.inGuild()) {
 			return interaction.reply({
 				content: 'This command can only be used in a server.',
-				ephemeral: true,
+				flags: MessageFlags.Ephemeral,
 			});
 		}
 		const certificateId = interaction.options.getString('certificate_id', true);
@@ -28,19 +28,19 @@ module.exports = {
 			if (result) {
 				return interaction.reply({
 					content: `Certificate with ID ${certificateId} has been deleted successfully.`,
-					ephemeral: true,
+					flags: MessageFlags.Ephemeral,
 				});
 			}
 			return interaction.reply({
 				content: `Certificate with ID ${certificateId} not found.`,
-				ephemeral: true,
+				flags: MessageFlags.Ephemeral,
 			});
 		}
 		catch (error) {
 			console.error('Error deleting certificate:', error);
 			return interaction.reply({
 				content: 'An error occurred while trying to delete the certificate.',
-				ephemeral: true,
+				flags: MessageFlags.Ephemeral,
 			});
 		}
 	},
