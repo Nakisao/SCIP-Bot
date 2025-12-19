@@ -69,16 +69,25 @@ async function deleteCertificateById(id) {
  * Accepts an object with fields like { description, appointRank }
  * Returns the created certificate object (including `certificateId`).
  */
-async function createCertificate({ description, appointRank } = {}) {
+async function createCertificate({ description, appointRank, certificateId } = {}) {
 	if (!description) throw new Error('description is required to create a certificate');
 
 	const client = await getClient();
 	const db = client.db('RAISA');
 	const col = db.collection('Certificates');
 
-	const certificateId = new ObjectId().toString();
+	let finalCertificateId = certificateId;
+
+	// If user provided a certificateId, ensure it's not already in use.
+	if (finalCertificateId) {
+		const existing = await col.findOne({ $or: [{ certificateId: finalCertificateId }, { id: finalCertificateId }] });
+		if (existing) throw new Error('certificateId already exists');
+	} else {
+		finalCertificateId = new ObjectId().toString();
+	}
+
 	const doc = {
-		certificateId,
+		certificateId: finalCertificateId,
 		description,
 		appointRank: appointRank || null,
 		createdAt: new Date(),
