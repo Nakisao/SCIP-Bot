@@ -1,5 +1,5 @@
 /* eslint-disable no-unused-vars */
-/* eslint-disable no-inline-comments */
+
 const { SlashCommandBuilder, MessageFlags } = require('discord.js');
 const moment = require('moment');
 

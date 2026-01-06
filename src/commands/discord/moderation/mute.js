@@ -1,0 +1,1 @@
+console.log('mute.js was loaded but has no code.');
