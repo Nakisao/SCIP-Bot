@@ -2,6 +2,8 @@ xnode:events:497
       throw er; // Unhandled 'error' event
       ^
 
+chat im not smith whats wrong with u 
+
 ReferenceError: Collection is not defined
     at Object.execute (C:\Users\Smith\SCIP-Bot\src\events\interactionCreate.js:19:42)
     at Client.<anonymous> (C:\Users\Smith\SCIP-Bot\index.js:53:44)
