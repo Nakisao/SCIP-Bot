@@ -3,7 +3,8 @@ const { MongoClient, ObjectId } = require('mongodb');
 // Load dotenv if available
 try {
 	require('dotenv').config();
-} catch {}
+}
+catch {}
 
 // Reuse a single MongoClient for the lifetime of the process.
 let _client = null;
@@ -82,7 +83,8 @@ async function createCertificate({ description, appointRank, certificateId } = {
 	if (finalCertificateId) {
 		const existing = await col.findOne({ $or: [{ certificateId: finalCertificateId }, { id: finalCertificateId }] });
 		if (existing) throw new Error('certificateId already exists');
-	} else {
+	}
+	else {
 		finalCertificateId = new ObjectId().toString();
 	}
 
