@@ -4,6 +4,7 @@ const { MongoClient, ObjectId } = require('mongodb');
 try {
 	require('dotenv').config();
 }
+// eslint-disable-next-line no-empty
 catch {}
 
 // Reuse a single MongoClient for the lifetime of the process.
