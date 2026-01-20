@@ -18,6 +18,7 @@ module.exports = {
 		}
 
 		await interaction.editReply(`🏓 **Pong!**\n\n**Bot Latency:** \`${latency}ms\`\n**API Latency:** \`${websocketLatency}ms\``);
+		console.log('Ping command executed by user: ', interaction.user.id, '\nBot Latency: ', latency, 'ms | API Latency: ', websocketLatency, 'ms');
 	},
 };
 
