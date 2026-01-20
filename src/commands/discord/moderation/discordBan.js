@@ -154,6 +154,7 @@ module.exports = {
 					content: `✅ Successfully banned **${targetUser.tag}** from **${interaction.guild.name}** for reason: \`\`\`${reason}\`\`\``,
 					// ephemeral: false is the default, so we remove it.
 				});
+				console.log('Executed Discord-Ban. User banned: ', targetUser.tag, ' | Global: ', isGlobal);
 			}
 			catch (error) {
 				console.error(error);
@@ -161,8 +162,10 @@ module.exports = {
 					content: `❌ Failed to ban **${targetUser.tag}**. An unexpected error occurred. Do I have the \`Ban Members\` permission?`,
 					flags: MessageFlags.Ephemeral, // FIXED: Replaced ephemeral: true
 				});
+				console.log('Failed to execute Discord-Ban. User: ', targetUser.tag, ' | Global: ', isGlobal, ' | Error: ', error?.message ?? error);
 			}
 		}
+
 	},
 };
 

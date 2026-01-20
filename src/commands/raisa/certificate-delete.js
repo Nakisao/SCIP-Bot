@@ -26,6 +26,7 @@ module.exports = {
 		try {
 			const result = await deleteCertificateById(certificateId);
 			if (result) {
+				console.log('Certificate deleted: ', certificateId, '\nby user: ', interaction.user.id);
 				return interaction.reply({
 					content: `Certificate with ID ${certificateId} has been deleted successfully.`,
 					flags: MessageFlags.Ephemeral,

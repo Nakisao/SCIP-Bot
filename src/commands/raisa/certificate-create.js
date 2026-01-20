@@ -40,6 +40,7 @@ module.exports = {
 		try {
 			await interaction.deferReply({ flags: MessageFlags.Ephemeral });
 			const cert = await createCertificate({ description, appointRank, certificateId: customId });
+			console.log('Certificate created: ', cert.certificateId, '\nby user: ', interaction.user.id, '\ndesc: ', description, '\nappoint rank: ', appointRank);
 			return interaction.editReply({ content: `Certificate created with ID ${cert.certificateId}.`, flags: MessageFlags.Ephemeral });
 		}
 		catch (error) {
@@ -47,6 +48,7 @@ module.exports = {
 			if (interaction.deferred || interaction.replied) {
 				return interaction.editReply({ content: 'An error occurred while creating the certificate.', flags: MessageFlags.Ephemeral });
 			}
+			console.error('Error creating certificate:', error);
 			return interaction.reply({ content: 'An error occurred while creating the certificate.', flags: MessageFlags.Ephemeral });
 		}
 	},

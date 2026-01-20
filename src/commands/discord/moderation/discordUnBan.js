@@ -80,10 +80,12 @@ module.exports = {
 				if (unbannedGuildsCount.failed > 0) {
 					replyContent += `\n*Note: Failed to unban in ${unbannedGuildsCount.failed} guild(s). This usually means the user was not banned there.*`;
 				}
+				console.log('Executed Discord-Unban. User unbanned: ', targetId, ' | Global: ', isGlobal);
 			}
 			else {
 				replyContent = `❌ Global unban failed for ID **${targetId}**. I was unable to unban the user from any of the ${totalGuilds} guilds. `
                     + 'The user may not be banned anywhere, or I might be missing the `Ban Members` permission.';
+				console.log('Failed to execute Discord-Unban. User: ', targetId, ' | Global: ', isGlobal, ' | Possibly lack of bans or permissions.');
 			}
 
 			// The deferred reply must be edited (not replied to again)
