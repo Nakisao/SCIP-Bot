@@ -9,26 +9,22 @@ catch {
 	// dotenv not installed; environment variables will be used instead
 }
 // eslint-disable-next-line no-unused-vars
-const { Client, IntentsBitField, Collection, Events, GatewayIntentBits, MessageFlags } = require('discord.js');
+const { Client, GatewayIntentBits, Collection, Events, MessageFlags } = require('discord.js');
 const config = require('./config.json');
 const token = process.env.DISCORD_TOKEN || process.env.TOKEN || config.token;
 
 const client = new Client({
 	intents: [
-		IntentsBitField.Flags.GuildMembers,
-		IntentsBitField.Flags.GuildMessages,
-		IntentsBitField.Flags.GuildModeration,
-		IntentsBitField.Flags.GuildIntegrations,
-		IntentsBitField.Flags.GuildWebhooks,
-		IntentsBitField.Flags.GuildInvites,
-		IntentsBitField.Flags.GuildMessageReactions,
-		IntentsBitField.Flags.MessageContent,
 		GatewayIntentBits.Guilds,
 		GatewayIntentBits.GuildMembers,
 		GatewayIntentBits.GuildModeration,
 		GatewayIntentBits.GuildMessages,
 		GatewayIntentBits.GuildMessageReactions,
 		GatewayIntentBits.GuildMessagePolls,
+		GatewayIntentBits.GuildIntegrations,
+		GatewayIntentBits.GuildWebhooks,
+		GatewayIntentBits.GuildInvites,
+		GatewayIntentBits.MessageContent,
 	],
 });
 
