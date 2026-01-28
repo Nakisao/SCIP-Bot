@@ -1,5 +1,3 @@
-/* eslint-disable no-unused-vars */
-
 const { SlashCommandBuilder, MessageFlags } = require('discord.js');
 const moment = require('moment');
 
@@ -64,6 +62,7 @@ module.exports = {
 		}
 		catch (error) {
 			// Handle case where the target user is NOT a member of the main guild
+			console.error('Error fetching member from main guild:', error, '\nTarget User ID:', targetUser.id, '\n User who ran this command:', interaction.user.id);
 			return interaction.reply({
 				content: `The user **${targetUser.tag}** is not a member of the main server.`,
 				flags: MessageFlags.Ephemeral,
@@ -100,6 +99,7 @@ module.exports = {
             `Highest Tracked Role: **${highestRoleName}**`;
 
 		await interaction.reply({ content: replyMessage });
+		console.log(`About-User command executed by ${interaction.user.tag} for target user ${targetUser.tag}.`);
 	},
 };
 

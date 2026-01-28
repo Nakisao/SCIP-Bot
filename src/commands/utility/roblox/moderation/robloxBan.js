@@ -1,1 +1,1 @@
-console.log('robloxBan.js was loaded but has no code.');
+console.warn('robloxBan.js was loaded but has no code.');

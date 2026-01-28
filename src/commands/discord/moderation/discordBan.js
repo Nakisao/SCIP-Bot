@@ -95,6 +95,7 @@ module.exports = {
 				}
 
 				try {
+					console.log(`[GLOBAL BAN] Banning ${targetUser.tag} in guild ${guild.name} (${guild.id})`);
 					await guild.members.ban(targetUser.id, banOptions);
 					bannedGuildsCount.success++;
 				}
@@ -142,6 +143,7 @@ module.exports = {
 			const memberToBan = interaction.guild.members.cache.get(targetUser.id);
 
 			if (memberToBan && !memberToBan.bannable) {
+				console.warn('Failed Executed Discord-Ban. User expected: ', targetUser.tag, '\n Not global. \n User who ran this command:', interaction.user.tag, '\n Error: Cannot ban user due to role hierarchy or permissions.');
 				return interaction.reply({
 					content: '❌ I cannot ban this user. They may have a higher role than me or be the server owner.',
 					flags: MessageFlags.Ephemeral, // FIXED: Replaced ephemeral: true

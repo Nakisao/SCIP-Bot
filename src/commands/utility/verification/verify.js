@@ -4,4 +4,4 @@
 // should have a command to check the verification status of a user
 // holding off on Verification. Bloxlink will handle verification for now until
 // we have the infrastructure to handle it ourselves. This will be a future project.
-console.log('verify.js was loaded but has no code.');
+console.warn('verify.js was loaded but has no code.');

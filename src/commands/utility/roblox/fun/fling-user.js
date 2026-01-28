@@ -1,1 +1,1 @@
-console.log('fling-user.js was loaded but has no code.');
+console.warn('fling-user.js was loaded but has no code.');
