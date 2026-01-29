@@ -63,7 +63,7 @@ async function createOrAppendCase({ targetUserId, creatorUserId, reason, securit
 				},
 				$set: { updatedAt: new Date() },
 			},
-			{ returnDocument: 'after' }
+			{ returnDocument: 'after' },
 		);
 		return updatedCase.value;
 	}
