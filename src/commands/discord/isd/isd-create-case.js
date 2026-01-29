@@ -7,11 +7,11 @@
 // utilizes MongoDB to store the intel
 // Scans MongoDB for existing intel files on the user, and if one exists, it appends to it rather than creating a new one
 const { SlashCommandBuilder, PermissionFlagsBits, MessageFlags } = require('discord.js');
-const { createOrAppendCase } = require('../../../utility/isdCases');
+const { createOrAppendCase } = require('../../../util/isdCases');
 
 module.exports = {
 	data: new SlashCommandBuilder()
-		.setName('Create Case')
+		.setName('isd-create-case')
 		.setDescription('Creates an intelligence case file.')
 		.addUserOption(option =>
 			option
