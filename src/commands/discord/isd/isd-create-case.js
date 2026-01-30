@@ -57,7 +57,7 @@ module.exports = {
 			console.log('Case created/updated:', caseData.caseId, '\nfor user:', targetUser.id, '\nby user:', interaction.user.id, '\nreason:', reason, '\nsecurity level:', securityLevel);
 
 			return interaction.editReply({
-				content: `Intelligence case file ${caseData.caseId.substring(0, 8)}... created/updated for ${targetUser.tag} with security level ${securityLevel} for reason: ${reason}`,
+				content: `Intelligence case file ${caseData.caseId} \n... created/updated for ${targetUser.tag} \n with security level ${securityLevel}  \n for reason: ${reason}`,
 				flags: MessageFlags.Ephemeral,
 			});
 		}
