@@ -48,9 +48,10 @@ async function createOrAppendCase({ targetUserId, creatorUserId, reason, securit
 	const existingCase = await col.findOne({ targetUserId });
 
 	if (existingCase) {
-		// Append to existing case
+		// Append to existing case using the document's _id for precision
+		console.log(`[DEBUG] Found existing case with _id: ${existingCase._id}, targetUserId: ${existingCase.targetUserId}`);
 		const updatedCase = await col.findOneAndUpdate(
-			{ targetUserId },
+			{ _id: existingCase._id },
 			{
 				$push: {
 					entries: {
@@ -65,8 +66,16 @@ async function createOrAppendCase({ targetUserId, creatorUserId, reason, securit
 			},
 			{ returnDocument: 'after' },
 		);
-		if (!updatedCase.value) {
-			throw new Error('Failed to append to case - update returned no document');
+		console.log(`[DEBUG] findOneAndUpdate result:`, updatedCase);
+		if (!updatedCase || !updatedCase.value) {
+			// Fallback: try to fetch the document directly
+			console.log(`[DEBUG] Update returned null, fetching document directly...`);
+			const refetchedCase = await col.findOne({ _id: existingCase._id });
+			if (refetchedCase) {
+				console.log(`[DEBUG] Successfully refetched case`);
+				return refetchedCase;
+			}
+			throw new Error('Failed to append to case - update returned no document and refetch failed');
 		}
 		return updatedCase.value;
 	}

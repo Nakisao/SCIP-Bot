@@ -68,6 +68,7 @@ async function addToCase(caseId, creatorUserId, content, fileUrl) {
 		}
 
 		// Add entry to the case
+		console.log(`[DEBUG] Attempting to update case with caseId: ${caseId}`);
 		const result = await caseCol.findOneAndUpdate(
 			{ caseId },
 			{
@@ -77,8 +78,16 @@ async function addToCase(caseId, creatorUserId, content, fileUrl) {
 			{ returnDocument: 'after' },
 		);
 
-		if (!result.value) {
-			throw new Error('Failed to update case');
+		console.log('[DEBUG] findOneAndUpdate result:', result);
+		if (!result || !result.value) {
+			// Fallback: fetch the document directly
+			console.log('[DEBUG] Update returned null, fetching document directly...');
+			const refetchedCase = await caseCol.findOne({ caseId });
+			if (refetchedCase) {
+				console.log('[DEBUG] Successfully refetched case');
+				return refetchedCase;
+			}
+			throw new Error('Failed to update case - update returned no document and refetch failed');
 		}
 
 		return result.value;
