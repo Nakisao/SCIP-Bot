@@ -65,6 +65,9 @@ async function createOrAppendCase({ targetUserId, creatorUserId, reason, securit
 			},
 			{ returnDocument: 'after' },
 		);
+		if (!updatedCase.value) {
+			throw new Error('Failed to append to case - update returned no document');
+		}
 		return updatedCase.value;
 	}
 	else {
@@ -86,10 +89,11 @@ async function createOrAppendCase({ targetUserId, creatorUserId, reason, securit
 		};
 
 		const res = await col.insertOne(newCase);
-		if (res.insertedId) {
-			return Object.assign({ _id: res.insertedId }, newCase);
+		if (!res.insertedId) {
+			throw new Error('Failed to insert case - no insertedId returned');
 		}
-		throw new Error('failed to insert case');
+		// Return the complete case object with the MongoDB _id
+		return Object.assign({ _id: res.insertedId }, newCase);
 	}
 }
 
