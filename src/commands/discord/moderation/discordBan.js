@@ -81,6 +81,7 @@ module.exports = {
 		if (isGlobal) {
 			// Global ban logic
 			const bannedGuildsCount = { success: 0, failed: 0 };
+			const bannedGuilds = []; // Track guilds where ban succeeded
 			const failedGuildDetails = []; // To store error messages for console logging
 			const totalGuilds = interaction.client.guilds.cache.size;
 
@@ -95,29 +96,13 @@ module.exports = {
 				}
 
 				try {
-					await sendLog({
-						message: `[GLOBAL BAN] Banning ${targetUser.tag}`,
-						client: interaction.client,
-						type: 'info',
-						command: 'discord-ban',
-						user: targetUser.tag,
-						guild: guild.name,
-						data: { guildId: guild.id },
-					});
 					await guild.members.ban(targetUser.id, banOptions);
 					bannedGuildsCount.success++;
+					bannedGuilds.push(guild.name);
 				}
 				catch (error) {
 					// Log the specific error instead of failing silently
-					await sendLog({
-						message: `[GLOBAL BAN FAIL] Failed to ban ${targetUser.tag} in ${guild.name}`,
-						client: interaction.client,
-						type: 'error',
-						command: 'discord-ban',
-						user: targetUser.tag,
-						guild: guild.name,
-						data: { error: error.message, guildId: guild.id },
-					});
+					console.error(`[GLOBAL BAN FAIL] Failed to ban ${targetUser.tag} in ${guild.name} (${guild.id}):`, error.message);
 					bannedGuildsCount.failed++;
 					failedGuildDetails.push(guild.name);
 				}
@@ -134,11 +119,41 @@ module.exports = {
 					replyContent += `\n*Note: Failed to ban in ${bannedGuildsCount.failed} guild(s). Reasons logged in the console (e.g., bot missing permissions).*`;
 					replyFlags = MessageFlags.Ephemeral; // Make the response ephemeral if there were failures
 				}
+
+				// Log consolidated ban to Discord
+				await sendLog({
+					message: 'Global ban executed for user',
+					client: interaction.client,
+					type: 'success',
+					command: 'discord-ban',
+					user: targetUser.tag,
+					data: {
+						executedBy: interaction.user.tag,
+						bannedInGuilds: bannedGuilds.join(', ') || 'None',
+						totalSuccess: bannedGuildsCount.success,
+						totalFailed: bannedGuildsCount.failed,
+						reason: reason,
+					},
+				});
 			}
 			else {
 				replyContent = `❌ Global ban failed for **${targetUser.tag}**. I was unable to ban the user from any of the ${totalGuilds} guilds. `
                     + 'Ensure I have the `Ban Members` permission in the guilds and check the console for specific errors.';
 				replyFlags = MessageFlags.Ephemeral;
+
+				// Log failed ban
+				await sendLog({
+					message: 'Global ban failed for user',
+					client: interaction.client,
+					type: 'error',
+					command: 'discord-ban',
+					user: targetUser.tag,
+					data: {
+						executedBy: interaction.user.tag,
+						reason: 'Unable to ban from any guilds',
+						reason_details: reason,
+					},
+				});
 			}
 
 			// If we deferred earlier (slow/global path), update the deferred reply. Otherwise use reply.

@@ -1,6 +1,6 @@
 const { SlashCommandBuilder, PermissionFlagsBits, MessageFlags } = require('discord.js');
 const { createCertificate } = require('../../../raisa/certificates');
-const { sendLog } = require('../../../util/logger');
+const { sendLog } = require('../../util/logger');
 
 module.exports = {
 	data: new SlashCommandBuilder()

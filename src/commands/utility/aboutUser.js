@@ -1,6 +1,6 @@
 const { SlashCommandBuilder, MessageFlags } = require('discord.js');
 const moment = require('moment');
-const { sendLog } = require('../../../util/logger');
+const { sendLog } = require('../../util/logger');
 
 // Define the main guild ID
 const MAIN_GUILD_ID = '1345631743935381534';
