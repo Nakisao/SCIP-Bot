@@ -5,6 +5,7 @@
 
 const { SlashCommandBuilder, PermissionFlagsBits, MessageFlags } = require('discord.js');
 const { MongoClient } = require('mongodb');
+const { sendLog } = require('../../../util/logger');
 
 // Load dotenv if available
 try {
@@ -90,7 +91,15 @@ module.exports = {
 			});
 		}
 		catch (error) {
-			console.error('Error archiving case:', error);
+			await sendLog({
+				message: 'Error archiving case',
+				client: interaction.client,
+				type: 'error',
+				command: 'isd-archive-case',
+				user: interaction.user.tag,
+				guild: interaction.guild?.name,
+				data: { error: error.message },
+			});
 			if (interaction.deferred || interaction.replied) {
 				return interaction.editReply({
 					content: `Error archiving case: ${error.message}`,

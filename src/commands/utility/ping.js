@@ -1,4 +1,5 @@
 const { SlashCommandBuilder } = require('discord.js');
+const { sendLog } = require('../../../util/logger');
 
 module.exports = {
 	data: new SlashCommandBuilder()
@@ -18,8 +19,14 @@ module.exports = {
 		}
 
 		await interaction.editReply(`🏓 **Pong!**\n\n**Bot Latency:** \`${latency}ms\`\n**API Latency:** \`${websocketLatency}ms\``);
-		console.log('Ping command executed by user: ', interaction.user.id, '\nBot Latency: ', latency, 'ms | API Latency: ', websocketLatency, 'ms');
+		await sendLog({
+			message: 'Ping command executed',
+			client: interaction.client,
+			type: 'success',
+			command: 'ping',
+			user: interaction.user.tag,
+			guild: interaction.guild?.name,
+			data: { botLatency: `${latency}ms`, apiLatency: `${websocketLatency}ms` },
+		});
 	},
 };
-
-console.log('ping.js loaded.');

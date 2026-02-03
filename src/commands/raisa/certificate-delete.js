@@ -2,6 +2,7 @@
 // requires administrator
 const { SlashCommandBuilder, PermissionFlagsBits, MessageFlags } = require('discord.js');
 const { deleteCertificateById } = require('../../../raisa/certificates');
+const { sendLog } = require('../../../util/logger');
 
 module.exports = {
 	data: new SlashCommandBuilder()
@@ -26,19 +27,44 @@ module.exports = {
 		try {
 			const result = await deleteCertificateById(certificateId);
 			if (result) {
-				console.log('Certificate deleted: ', certificateId, '\nby user: ', interaction.user.id);
+				await sendLog({
+					message: 'Certificate deleted',
+					client: interaction.client,
+					type: 'success',
+					command: 'certificate-delete',
+					user: interaction.user.tag,
+					guild: interaction.guild?.name,
+					data: { certificateId },
+				});
 				return interaction.reply({
 					content: `Certificate with ID ${certificateId} has been deleted successfully.`,
 					flags: MessageFlags.Ephemeral,
 				});
 			}
+			await sendLog({
+				message: 'Certificate not found for deletion',
+				client: interaction.client,
+				type: 'warning',
+				command: 'certificate-delete',
+				user: interaction.user.tag,
+				guild: interaction.guild?.name,
+				data: { certificateId },
+			});
 			return interaction.reply({
 				content: `Certificate with ID ${certificateId} not found.`,
 				flags: MessageFlags.Ephemeral,
 			});
 		}
 		catch (error) {
-			console.error('Error deleting certificate:', error);
+			await sendLog({
+				message: 'Error deleting certificate',
+				client: interaction.client,
+				type: 'error',
+				command: 'certificate-delete',
+				user: interaction.user.tag,
+				guild: interaction.guild?.name,
+				data: { certificateId, error: error.message },
+			});
 			return interaction.reply({
 				content: 'An error occurred while trying to delete the certificate.',
 				flags: MessageFlags.Ephemeral,
@@ -46,9 +72,6 @@ module.exports = {
 		}
 	},
 };
-
-// eslint-disable-next-line quotes
-console.log("Loaded certificate-delete.js");
 
 // delete the certificate with the given ID
 // return true if deleted, false if not found

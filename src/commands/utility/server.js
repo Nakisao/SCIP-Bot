@@ -1,4 +1,5 @@
 const { SlashCommandBuilder } = require('discord.js');
+const { sendLog } = require('../../../util/logger');
 
 module.exports = {
 	data: new SlashCommandBuilder()
@@ -6,8 +7,14 @@ module.exports = {
 		.setDescription('Provides information about the server.'),
 	async execute(interaction) {
 		await interaction.reply(`This server is ${interaction.guild.name} and has ${interaction.guild.memberCount} members.`);
-		console.log('Server command executed by user: ', interaction.user.id, '\n | Server: ', interaction.guild.name, '\n | Members: ', interaction.guild.memberCount);
+		await sendLog({
+			message: 'Server command executed',
+			client: interaction.client,
+			type: 'success',
+			command: 'server',
+			user: interaction.user.tag,
+			guild: interaction.guild.name,
+			data: { memberCount: interaction.guild.memberCount },
+		});
 	},
 };
-
-console.log('server.js loaded.');

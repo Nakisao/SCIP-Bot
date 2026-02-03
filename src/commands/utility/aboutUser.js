@@ -1,5 +1,6 @@
 const { SlashCommandBuilder, MessageFlags } = require('discord.js');
 const moment = require('moment');
+const { sendLog } = require('../../../util/logger');
 
 // Define the main guild ID
 const MAIN_GUILD_ID = '1345631743935381534';
@@ -62,7 +63,15 @@ module.exports = {
 		}
 		catch (error) {
 			// Handle case where the target user is NOT a member of the main guild
-			console.error('Error fetching member from main guild:', error, '\nTarget User ID:', targetUser.id, '\n User who ran this command:', interaction.user.id);
+			await sendLog({
+				message: 'Error fetching member from main guild',
+				client: interaction.client,
+				type: 'error',
+				command: 'about-user',
+				user: interaction.user.tag,
+				guild: interaction.guild?.name,
+				data: { targetUserId: targetUser.id, error: error.message },
+			});
 			return interaction.reply({
 				content: `The user **${targetUser.tag}** is not a member of the main server.`,
 				flags: MessageFlags.Ephemeral,
@@ -99,8 +108,14 @@ module.exports = {
             `Highest Tracked Role: **${highestRoleName}**`;
 
 		await interaction.reply({ content: replyMessage });
-		console.log(`About-User command executed by ${interaction.user.tag} for target user ${targetUser.tag}.`);
+		await sendLog({
+			message: 'About-User command executed',
+			client: interaction.client,
+			type: 'success',
+			command: 'about-user',
+			user: interaction.user.tag,
+			guild: interaction.guild?.name,
+			data: { targetUser: targetUser.tag },
+		});
 	},
 };
-
-console.log('user.js loaded.');

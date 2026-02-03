@@ -8,6 +8,7 @@
 // Scans MongoDB for existing intel files on the user, and if one exists, it appends to it rather than creating a new one
 const { SlashCommandBuilder, PermissionFlagsBits, MessageFlags } = require('discord.js');
 const { createOrAppendCase } = require('../../../util/isdCases');
+const { sendLog } = require('../../../util/logger');
 
 module.exports = {
 	data: new SlashCommandBuilder()
@@ -54,7 +55,14 @@ module.exports = {
 				securityLevel,
 			});
 
-			console.log('Case created/updated:', caseData.caseId, '\nfor user:', targetUser.id, '\nby user:', interaction.user.id, '\nreason:', reason, '\nsecurity level:', securityLevel);
+			await sendLog({
+				message: 'Case created/updated for user',
+				client: interaction.client,
+				type: 'success',
+				command: 'isd-create-case',
+				user: targetUser.tag,
+				data: { caseId: caseData.caseId, createdBy: interaction.user.tag, reason: reason, securityLevel: securityLevel },
+			});
 
 			return interaction.editReply({
 				content: `Intelligence case file ${caseData.caseId} \n... created/updated for ${targetUser.tag} \n with security level ${securityLevel}  \n for reason: ${reason}`,
@@ -62,7 +70,14 @@ module.exports = {
 			});
 		}
 		catch (error) {
-			console.error('Error creating/updating case:', error);
+			await sendLog({
+				message: 'Error creating/updating case',
+				client: interaction.client,
+				type: 'error',
+				command: 'isd-create-case',
+				user: targetUser.tag,
+				data: { error: error?.message ?? error, createdBy: interaction.user.tag },
+			});
 			if (interaction.deferred || interaction.replied) {
 				return interaction.editReply({
 					content: 'An error occurred while creating the case file.',

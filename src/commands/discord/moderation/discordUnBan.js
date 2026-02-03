@@ -1,6 +1,6 @@
 /* eslint-disable no-inline-comments */
 const { SlashCommandBuilder, PermissionFlagsBits, MessageFlags } = require('discord.js');
-console.warn('Loading discordUnban.js...');
+const { sendLog } = require('../../../util/logger');
 
 module.exports = {
 	data: new SlashCommandBuilder()
@@ -66,7 +66,15 @@ module.exports = {
 				}
 				catch (error) {
 					// Log the specific error (e.g., user not banned in this guild)
-					console.error(`[GLOBAL UNBAN FAIL] Failed to unban ID ${targetId} in ${guild.name} (${guild.id}):`, error.message);
+					await sendLog({
+						message: `[GLOBAL UNBAN FAIL] Failed to unban ID ${targetId} in ${guild.name}`,
+						client: interaction.client,
+						type: 'error',
+						command: 'discord-unban',
+						user: targetId,
+						guild: guild.name,
+						data: { error: error.message, guildId: guild.id },
+					});
 					unbannedGuildsCount.failed++;
 				}
 			}
@@ -80,12 +88,26 @@ module.exports = {
 				if (unbannedGuildsCount.failed > 0) {
 					replyContent += `\n*Note: Failed to unban in ${unbannedGuildsCount.failed} guild(s). This usually means the user was not banned there.*`;
 				}
-				console.log('Executed Discord-Unban. User unbanned: ', targetId, ' | Global: ', isGlobal);
+				await sendLog({
+					message: 'Successfully unbanned user globally',
+					client: interaction.client,
+					type: 'success',
+					command: 'discord-unban',
+					user: targetId,
+					data: { unbannedIn: unbannedGuildsCount.success, totalGuilds: totalGuilds, global: isGlobal },
+				});
 			}
 			else {
 				replyContent = `❌ Global unban failed for ID **${targetId}**. I was unable to unban the user from any of the ${totalGuilds} guilds. `
                     + 'The user may not be banned anywhere, or I might be missing the `Ban Members` permission.';
-				console.log('Failed to execute Discord-Unban. User: ', targetId, ' | Global: ', isGlobal, ' | Possibly lack of bans or permissions.');
+				await sendLog({
+					message: 'Failed to unban user globally',
+					client: interaction.client,
+					type: 'error',
+					command: 'discord-unban',
+					user: targetId,
+					data: { global: isGlobal, reason: 'User possibly not banned or permissions missing' },
+				});
 			}
 
 			// The deferred reply must be edited (not replied to again)
@@ -108,9 +130,17 @@ module.exports = {
 				await interaction.reply({
 					content: `✅ Successfully unbanned ID **${targetId}** from **${interaction.guild.name}** for reason: \`\`\`${reason}\`\`\``,
 				});
+				await sendLog({
+					message: 'Successfully unbanned user',
+					client: interaction.client,
+					type: 'success',
+					command: 'discord-unban',
+					user: targetId,
+					guild: interaction.guild.name,
+					data: { reason: reason, global: isGlobal },
+				});
 			}
 			catch (error) {
-				console.error(error);
 				let errorMessage;
 
 				if (error.code === 10026) { // Unknown Ban / Not Banned
@@ -120,6 +150,16 @@ module.exports = {
 					errorMessage = `❌ Failed to unban ID **${targetId}**. An unexpected error occurred. Do I have the \`Ban Members\` permission?`;
 				}
 
+				await sendLog({
+					message: 'Failed to unban user',
+					client: interaction.client,
+					type: 'error',
+					command: 'discord-unban',
+					user: targetId,
+					guild: interaction.guild.name,
+					data: { error: error?.message ?? error, global: isGlobal },
+				});
+
 				await interaction.reply({
 					content: errorMessage,
 					flags: MessageFlags.Ephemeral,
@@ -128,5 +168,3 @@ module.exports = {
 		}
 	},
 };
-
-console.log('discordUnban.js loaded.');

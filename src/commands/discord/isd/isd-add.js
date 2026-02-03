@@ -8,6 +8,7 @@
 // requires: be ISD or SC-4+
 const { SlashCommandBuilder, PermissionFlagsBits, MessageFlags } = require('discord.js');
 const { MongoClient, ObjectId } = require('mongodb');
+const { sendLog } = require('../../../util/logger');
 
 // Load dotenv if available
 try {
@@ -68,7 +69,6 @@ async function addToCase(caseId, creatorUserId, content, fileUrl) {
 		}
 
 		// Add entry to the case
-		console.log(`[DEBUG] Attempting to update case with caseId: ${caseId}`);
 		const result = await caseCol.findOneAndUpdate(
 			{ caseId },
 			{
@@ -78,13 +78,10 @@ async function addToCase(caseId, creatorUserId, content, fileUrl) {
 			{ returnDocument: 'after' },
 		);
 
-		console.log('[DEBUG] findOneAndUpdate result:', result);
 		if (!result || !result.value) {
 			// Fallback: fetch the document directly
-			console.log('[DEBUG] Update returned null, fetching document directly...');
 			const refetchedCase = await caseCol.findOne({ caseId });
 			if (refetchedCase) {
-				console.log('[DEBUG] Successfully refetched case');
 				return refetchedCase;
 			}
 			throw new Error('Failed to update case - update returned no document and refetch failed');
@@ -159,7 +156,15 @@ module.exports = {
 			});
 		}
 		catch (error) {
-			console.error('Error adding to case:', error);
+			await sendLog({
+				message: 'Error adding to case',
+				client: interaction.client,
+				type: 'error',
+				command: 'isd-add',
+				user: interaction.user.tag,
+				guild: interaction.guild?.name,
+				data: { error: error.message },
+			});
 			if (interaction.deferred || interaction.replied) {
 				return interaction.editReply({
 					content: `Error adding to case: ${error.message}`,

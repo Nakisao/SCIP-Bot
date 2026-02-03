@@ -1,5 +1,6 @@
 /* eslint-disable no-inline-comments */
 const { SlashCommandBuilder, PermissionFlagsBits, MessageFlags } = require('discord.js');
+const { sendLog } = require('../../../util/logger');
 module.exports = {
 	data: new SlashCommandBuilder()
 		.setName('discord-ban')
@@ -94,13 +95,29 @@ module.exports = {
 				}
 
 				try {
-					console.log(`[GLOBAL BAN] Banning ${targetUser.tag} in guild ${guild.name} (${guild.id})`);
+					await sendLog({
+						message: `[GLOBAL BAN] Banning ${targetUser.tag}`,
+						client: interaction.client,
+						type: 'info',
+						command: 'discord-ban',
+						user: targetUser.tag,
+						guild: guild.name,
+						data: { guildId: guild.id },
+					});
 					await guild.members.ban(targetUser.id, banOptions);
 					bannedGuildsCount.success++;
 				}
 				catch (error) {
 					// Log the specific error instead of failing silently
-					console.error(`[GLOBAL BAN FAIL] Failed to ban ${targetUser.tag} in ${guild.name} (${guild.id}):`, error.message);
+					await sendLog({
+						message: `[GLOBAL BAN FAIL] Failed to ban ${targetUser.tag} in ${guild.name}`,
+						client: interaction.client,
+						type: 'error',
+						command: 'discord-ban',
+						user: targetUser.tag,
+						guild: guild.name,
+						data: { error: error.message, guildId: guild.id },
+					});
 					bannedGuildsCount.failed++;
 					failedGuildDetails.push(guild.name);
 				}
@@ -142,7 +159,15 @@ module.exports = {
 			const memberToBan = interaction.guild.members.cache.get(targetUser.id);
 
 			if (memberToBan && !memberToBan.bannable) {
-				console.warn('Failed Executed Discord-Ban. User expected: ', targetUser.tag, '\n Not global. \n User who ran this command:', interaction.user.tag, '\n Error: Cannot ban user due to role hierarchy or permissions.');
+				await sendLog({
+					message: 'Failed to ban user due to role hierarchy or permissions',
+					client: interaction.client,
+					type: 'warning',
+					command: 'discord-ban',
+					user: targetUser.tag,
+					guild: interaction.guild.name,
+					data: { executedBy: interaction.user.tag },
+				});
 				return interaction.reply({
 					content: '❌ I cannot ban this user. They may have a higher role than me or be the server owner.',
 					flags: MessageFlags.Ephemeral, // FIXED: Replaced ephemeral: true
@@ -155,19 +180,32 @@ module.exports = {
 					content: `✅ Successfully banned **${targetUser.tag}** from **${interaction.guild.name}** for reason: \`\`\`${reason}\`\`\``,
 					// ephemeral: false is the default, so we remove it.
 				});
-				console.log('Executed Discord-Ban. User banned: ', targetUser.tag, ' | Global: ', isGlobal);
+				await sendLog({
+					message: 'Successfully banned user',
+					client: interaction.client,
+					type: 'success',
+					command: 'discord-ban',
+					user: targetUser.tag,
+					guild: interaction.guild.name,
+					data: { reason: reason, global: isGlobal },
+				});
 			}
 			catch (error) {
-				console.error(error);
+				await sendLog({
+					message: 'Failed to execute Discord-Ban',
+					client: interaction.client,
+					type: 'error',
+					command: 'discord-ban',
+					user: targetUser.tag,
+					guild: interaction.guild.name,
+					data: { error: error?.message ?? error, global: isGlobal },
+				});
 				await interaction.reply({
 					content: `❌ Failed to ban **${targetUser.tag}**. An unexpected error occurred. Do I have the \`Ban Members\` permission?`,
 					flags: MessageFlags.Ephemeral, // FIXED: Replaced ephemeral: true
 				});
-				console.log('Failed to execute Discord-Ban. User: ', targetUser.tag, ' | Global: ', isGlobal, ' | Error: ', error?.message ?? error);
 			}
 		}
 
 	},
 };
-
-console.log('discordban.js loaded.');

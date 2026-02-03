@@ -1,5 +1,6 @@
 const { SlashCommandBuilder, PermissionFlagsBits, MessageFlags } = require('discord.js');
 const { createCertificate } = require('../../../raisa/certificates');
+const { sendLog } = require('../../../util/logger');
 
 module.exports = {
 	data: new SlashCommandBuilder()
@@ -40,18 +41,31 @@ module.exports = {
 		try {
 			await interaction.deferReply({ flags: MessageFlags.Ephemeral });
 			const cert = await createCertificate({ description, appointRank, certificateId: customId });
-			console.log('Certificate created: ', cert.certificateId, '\nby user: ', interaction.user.id, '\ndesc: ', description, '\nappoint rank: ', appointRank);
+			await sendLog({
+				message: 'Certificate created',
+				client: interaction.client,
+				type: 'success',
+				command: 'certificate-create',
+				user: interaction.user.tag,
+				guild: interaction.guild?.name,
+				data: { certificateId: cert.certificateId, description, appointRank },
+			});
 			return interaction.editReply({ content: `Certificate created with ID ${cert.certificateId}.`, flags: MessageFlags.Ephemeral });
 		}
 		catch (error) {
-			console.error('Error creating certificate:', error);
+			await sendLog({
+				message: 'Error creating certificate',
+				client: interaction.client,
+				type: 'error',
+				command: 'certificate-create',
+				user: interaction.user.tag,
+				guild: interaction.guild?.name,
+				data: { error: error.message },
+			});
 			if (interaction.deferred || interaction.replied) {
 				return interaction.editReply({ content: 'An error occurred while creating the certificate.', flags: MessageFlags.Ephemeral });
 			}
-			console.error('Error creating certificate:', error);
 			return interaction.reply({ content: 'An error occurred while creating the certificate.', flags: MessageFlags.Ephemeral });
 		}
 	},
 };
-
-console.log('Loaded certificate-create.js');

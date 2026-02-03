@@ -1,4 +1,5 @@
 const { Events, MessageFlags, Collection } = require('discord.js');
+const { sendLog } = require('../util/logger');
 
 module.exports = {
 	name: Events.InteractionCreate,
@@ -9,7 +10,15 @@ module.exports = {
 		const command = interaction.client.commands.get(interaction.commandName);
 
 		if (!command) {
-			console.error(`No command matching ${interaction.commandName} was found.`);
+			await sendLog({
+				message: `No command matching ${interaction.commandName} was found`,
+				client: interaction.client,
+				type: 'error',
+				command: 'interactionCreate',
+				user: interaction.user.tag,
+				guild: interaction.guild?.name,
+				data: { commandName: interaction.commandName },
+			});
 			return;
 		}
 
@@ -40,7 +49,15 @@ module.exports = {
 			await command.execute(interaction);
 		}
 		catch (error) {
-			console.error(error);
+			await sendLog({
+				message: 'Error executing command',
+				client: interaction.client,
+				type: 'error',
+				command: interaction.commandName,
+				user: interaction.user.tag,
+				guild: interaction.guild?.name,
+				data: { error: error.message },
+			});
 			// The interaction may have expired or otherwise become invalid by the time we
 			// try to notify the user. Wrap reply/followUp attempts to avoid throwing an
 			// unhandled exception (e.g., DiscordAPIError[10062]: Unknown interaction).
@@ -53,10 +70,16 @@ module.exports = {
 				}
 			}
 			catch (replyError) {
-				console.error('Failed to send error response to interaction:', replyError?.message ?? replyError);
+				await sendLog({
+					message: 'Failed to send error response to interaction',
+					client: interaction.client,
+					type: 'error',
+					command: 'interactionCreate',
+					user: interaction.user.tag,
+					guild: interaction.guild?.name,
+					data: { error: replyError?.message ?? String(replyError) },
+				});
 			}
 		}
 	},
 };
-
-console.log('interactionCreate.js loaded.');
