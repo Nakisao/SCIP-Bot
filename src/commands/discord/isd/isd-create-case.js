@@ -80,12 +80,12 @@ module.exports = {
 			});
 			if (interaction.deferred || interaction.replied) {
 				return interaction.editReply({
-					content: 'An error occurred while creating the case file.',
+					content: `An error occurred while creating the case file. | ${error?.message ?? error}`,
 					flags: MessageFlags.Ephemeral,
 				});
 			}
 			return interaction.reply({
-				content: 'An error occurred while creating the case file.',
+				content: `An error occurred while creating the case file. | ${error?.message ?? error}`,
 				flags: MessageFlags.Ephemeral,
 			});
 		}
