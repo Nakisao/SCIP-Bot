@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 // appoint a RAISA certificate to a user (permits IDs)
 // *requires user to be verified with the bot
 // *appointer requires RAISA Certificate role specified
@@ -17,13 +18,22 @@ const { MessageEmbed } = require('discord.js');
 const { getUserByCertificateID, addCertificateToUser } = require('../../utils/database');
 
 module.exports = {
-    data: new SlashCommandBuilder()
-        .setName('appoint')
-        .setDescription('Appoint a RAISA certificate to a user')
-        .addStringOption(option =>
-            option.setName('certificate')
-                .setDescription('RAISA Certificate ID or name')
-                .setRequired(true)),
-    async execute(interaction) {
-        const certificateInput = interaction.options.getString('certificate');
-        const appointer = interaction.member;
+	data: new SlashCommandBuilder()
+		.setName('appoint')
+		.setDescription('Appoint a RAISA certificate to a user')
+		.addStringOption(option =>
+			option.setName('certificate')
+				.setDescription('RAISA Certificate ID or name')
+				.setRequired(true)),
+	async execute(interaction) {
+		const certificateInput = interaction.options.getString('certificate');
+		const appointer = interaction.member;
+
+		// TODO: Implement actual logic for appointing a certificate
+		// For now, just reply with a placeholder message
+		await interaction.reply({
+			content: `Appointing certificate: ${certificateInput} (requested by <@${appointer.id}>)`,
+			ephemeral: true,
+		});
+	},
+};
