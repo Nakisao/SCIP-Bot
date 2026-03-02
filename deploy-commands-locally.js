@@ -70,12 +70,12 @@ for (const filePath of commandFiles) {
 // ... (Your original guards remain the same)
 if (!token) {
 	console.error('No Discord token found. Set DISCORD_TOKEN in the environment or add it to config.json (not recommended).');
-	process.exit(1);
+	process.sleep(100000);
 }
 
 if (!clientId || !guildId) {
 	console.error('CLIENT_ID and GUILD_ID must be set in the environment or in config.json.');
-	process.exit(1);
+	process.sleep(100000);
 }
 
 // Construct and prepare an instance of the REST module

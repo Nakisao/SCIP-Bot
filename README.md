@@ -3,6 +3,8 @@ Welcome to Echelon's SCIP subsystem.
 This handles anything we need.
 In the event that Guardsman [gdsmn.dev](https://gdsmn.dev) goes down, SCIP should inherit all moderation needs down the line.
 
+https://img.shields.io/docker/cloud/build/nakisao/yourimage
+
 ---
 Handles:
 - ISD Intelligence
@@ -20,3 +22,6 @@ Handles:
 > - Be On-Site when there is a protocol besides (Yellow Ember/Blue Sky).
 > - Permitted to play as ScD Entrant
 > - Permitted to play as MD Student
++ Archives for ISD and storage for what userID is associated with an account.
+    (UIDs only.)
+---

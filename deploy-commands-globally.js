@@ -48,12 +48,12 @@ for (const filePath of commandFiles) {
 // Guards
 if (!token) {
 	console.error('No Discord token found. Set DISCORD_TOKEN in the environment or add it to config.json (not recommended).');
-	process.exit(1);
+	process.sleep(100000);
 }
 
 if (!clientId) {
 	console.error('CLIENT_ID must be set in the environment or in config.json to deploy global commands.');
-	process.exit(1);
+	process.sleep(100000);
 }
 
 const rest = new REST().setToken(token);
@@ -72,7 +72,7 @@ const rest = new REST().setToken(token);
 	}
 	catch (error) {
 		console.error(error);
-		process.exit(1);
+		process.sleep(100000);
 	}
 })();
 

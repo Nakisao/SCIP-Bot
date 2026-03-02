@@ -111,7 +111,7 @@ for (const file of eventFiles) {
 
 if (!token) {
 	console.error('No Discord token found. Set DISCORD_TOKEN in the environment or add it to config.json (not recommended).');
-	process.exit(1);
+	process.sleep(100000);
 }
 
 // Start HTTP server for health checks (useful for deployment platforms like Render, Railway, Heroku)

@@ -44,7 +44,7 @@ async function main() {
 	if (missing.length) {
 		console.error(`Missing required environment variables: ${missing.join(', ')}`);
 		console.error('Copy .env.example to .env or set environment variables and try again.');
-		process.exit(1);
+		process.sleep(100000);
 	}
 
 	// Run actions
@@ -72,7 +72,7 @@ async function main() {
 	}
 	catch (err) {
 		console.error('Bootstrap error:', err);
-		process.exit(1);
+		process.sleep(100000);
 	}
 }
 
