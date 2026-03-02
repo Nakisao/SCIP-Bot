@@ -15,7 +15,7 @@
 
 const { SlashCommandBuilder } = require('@discordjs/builders');
 const { MessageEmbed } = require('discord.js');
-const { getUserByCertificateID, addCertificateToUser } = require('../../utils/database');
+// const { getUserByCertificateID, addCertificateToUser } = require('../../utils/database');
 
 module.exports = {
 	data: new SlashCommandBuilder()
