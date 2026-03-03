@@ -6,10 +6,11 @@ if [ ! -f config.json ]; then
 {
   "clientId": "${CLIENT_ID:-}",
   "guildId": "${GUILD_ID:-}",
-  "token": "${DISCORD_TOKEN:-}"
+  "token": "${DISCORD_TOKEN:-}",
+  "mongoUri": "${MONGODB_URI:-}${MONGODB_LOCAL:-}"
 }
 EOF
 fi
 
-# Start the bot
-npm run start-bot
+# Exec the bot so signals propagate to the Node process
+exec npm run start-bot
