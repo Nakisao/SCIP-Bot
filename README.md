@@ -25,3 +25,7 @@ Handles:
 + Archives for ISD and storage for what userID is associated with an account.
     (UIDs only.)
 ---
+
+- Look at Gemini. 
+- RoProxy.com -> Self-Host
+    - Permits you full control over hosting I think?
