@@ -29,3 +29,6 @@ Handles:
 - Look at Gemini. 
 - RoProxy.com -> Self-Host
     - Permits you full control over hosting I think?
+https://github.com/sentanos/rprxy
+https://devforum.roblox.com/t/psa-stop-using-roblox-proxies-roproxy-rprxyxyz-rprxy/1573256
+https://github.com/askfalse/roproxy-lite
