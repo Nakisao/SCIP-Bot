@@ -1,0 +1,3 @@
+[submodule "roproxy-lite"]
+	path = roproxy-lite
+	url = https://github.com/askfalse/roproxy-lite.git
