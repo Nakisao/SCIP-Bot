@@ -1,21 +1,66 @@
+version: '3.8'
+
 services:
+  # RoProxy-lite service (HTTP proxy for Roblox)
+  roproxy:
+    build:
+      context: ./roproxy-lite
+      dockerfile: Dockerfile
+    container_name: roproxy-lite
+    restart: unless-stopped
+    environment:
+      - PORT=8080
+      - KEY=${PROXY_KEY}
+      - TIMEOUT=30
+      - RETRIES=3
+    ports:
+      # Internal networking via Docker network (scip-bot -> roproxy:8080)
+      # External access via port 8080 (for Roblox/tunneling)
+      - "8080:8080"
+    networks:
+      - scip-network
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:8080/example.com/test"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+
+  # SCIP-Bot service (Discord.js bot)
   scip-bot:
     build:
       context: .
       dockerfile: Dockerfile
     container_name: scip-bot
     restart: unless-stopped
+    depends_on:
+      roproxy:
+        condition: service_healthy
     environment:
       - DISCORD_TOKEN=${DISCORD_TOKEN}
       - CLIENT_ID=${CLIENT_ID}
       - GUILD_ID=${GUILD_ID}
       - MONGODB_URI=${MONGODB_URI}
       - NODE_ENV=production
+      - PROXY_URL=http://roproxy:8080
+      - PROXY_KEY=${PROXY_KEY}
+      - LOG_CHANNEL_ID=${LOG_CHANNEL_ID}
     volumes:
       # Mount logs directory for persistence
       - ./logs:/app/logs
+    networks:
+      - scip-network
     logging:
       driver: "json-file"
       options:
         max-size: "10m"
         max-file: "3"
+
+networks:
+  scip-network:
+    driver: bridge
