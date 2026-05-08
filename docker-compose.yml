@@ -11,6 +11,7 @@ services:
     environment:
       - PORT=8080
       - KEY=${PROXY_KEY}
+      - ALLOWED_PLACE_ID=${ALLOWED_PLACE_ID}
       - TIMEOUT=30
       - RETRIES=3
     ports:
