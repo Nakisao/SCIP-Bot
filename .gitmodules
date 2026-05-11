@@ -1,4 +1,4 @@
 [submodule "roproxy-lite"]
 	path = roproxy-lite
 	url = https://github.com/Nakisao/rpxy-fork_forechelon.git
-	branch = health-endpoint
+	branch = main
