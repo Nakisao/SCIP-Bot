@@ -1,3 +1,4 @@
+/* eslint-disable quotes */
 const { MongoClient, ObjectId } = require('mongodb');
 
 // Load dotenv if available
